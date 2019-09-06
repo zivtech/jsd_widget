@@ -10,9 +10,9 @@ use Drupal\Core\Form\FormStateInterface;
  * Provides a Jira Service Desk Widget Block.
  *
  * @Block(
- *   id = "widget_block",
- *   admin_label = @Translation("Widget block"),
- *   category = @Translation("Hello Widget"),
+ *   id = "jsd_widget_block",
+ *   admin_label = @Translation("Jira Service Desk Widget block"),
+ *   category = @Translation("Jira Service Desk Widget"),
  * )
  */
 class WidgetBlock extends BlockBase implements BlockPluginInterface {
@@ -48,7 +48,9 @@ class WidgetBlock extends BlockBase implements BlockPluginInterface {
    * {@inheritdoc}
    */
   public function build() {
+  	$config = $this->getConfiguration();
   	$data_key = $config['widget_data_key'];
+
     return [
       '#markup' => $this->t('<script data-jsd-embedded data-key="' . $data_key . '" data-base-url="https://jsd-widget.atlassian.com" src="https://jsd-widget.atlassian.com/assets/embed.js"></script>'),
     ];
