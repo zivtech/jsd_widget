@@ -6,7 +6,7 @@ A Drupal 8 module that enables a Jira Service Desk Cloud Widget on a Drupal 8 si
 - Display the JSD Cloud Widget for specific user roles using Blocks visibility settings.
 
 ## Installation
-- Configure a login-free portal](https://confluence.atlassian.com/servicedeskcloud/blog/2017/04/introducing-the-login-free-portal-for-jira-service-desk-cloud) on your Jira Service Desk Cloud instance so customers can view the widget.
+- Configure a [login-free portal](https://confluence.atlassian.com/servicedeskcloud/blog/2017/04/introducing-the-login-free-portal-for-jira-service-desk-cloud) on your Jira Service Desk Cloud instance so customers can view the widget.
 - Download and install the JSD Widget module.
 - Goto the Block Layout page and place the **Jira Service Desk Widget block** in any region.
 - Configure the **Jira Service Desk Widget block**.
