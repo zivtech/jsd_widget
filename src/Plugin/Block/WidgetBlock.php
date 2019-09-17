@@ -18,7 +18,7 @@ use Drupal\Core\Form\FormStateInterface;
 class WidgetBlock extends BlockBase implements BlockPluginInterface {
 
   /**
-   * {@inheritdoc}
+   * Add field for Jira Service Desk data-key value.
    */
   public function blockForm($form, FormStateInterface $form_state) {
     $form = parent::blockForm($form, $form_state);
@@ -36,7 +36,7 @@ class WidgetBlock extends BlockBase implements BlockPluginInterface {
   }
 
   /**
-   * {@inheritdoc}
+   * Save data-key field value to config.
    */
   public function blockSubmit($form, FormStateInterface $form_state) {
     parent::blockSubmit($form, $form_state);
@@ -45,7 +45,7 @@ class WidgetBlock extends BlockBase implements BlockPluginInterface {
   }
 
   /**
-   * {@inheritdoc}
+   * Load data-key value from config and build block markup.
    */
   public function build() {
   	$config = $this->getConfiguration();
