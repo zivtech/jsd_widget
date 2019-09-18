@@ -48,8 +48,8 @@ class WidgetBlock extends BlockBase implements BlockPluginInterface {
    * Load data-key value from config and build block markup.
    */
   public function build() {
-  	$config = $this->getConfiguration();
-  	$data_key = $config['widget_data_key'];
+    $config = $this->getConfiguration();
+    $data_key = $config['widget_data_key'];
 
     return [
       '#markup' => $this->t('<script data-jsd-embedded data-key="' . $data_key . '" data-base-url="https://jsd-widget.atlassian.com" src="https://jsd-widget.atlassian.com/assets/embed.js"></script>'),
