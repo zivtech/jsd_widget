@@ -1,6 +1,4 @@
-name: Jira Service Desk Widget Module
-description: Creates a block showing a Jira Service Desk Widget using the widget ID.
-package: Custom
-type: module
-version: 1.0
-core: 7.x
+name = Jira Service Desk Widget
+description = Creates a block showing a Jira Service Desk Widget using the widget ID.
+core = 7.x
+package = Jira Service Desk

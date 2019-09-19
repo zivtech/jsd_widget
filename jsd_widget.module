@@ -4,27 +4,30 @@
  * Implements hook_block_info().
  */
 function jsd_widget_block_info() {
-  $blocks = array();
   $blocks['jsd_widget'] = array(
-    'info' => t('My Custom Block'),
+    // The name that will appear in the block list.
+    'info' => t('Jira Service Desk Widget'),
+    // Default setting.
+    'cache' => DRUPAL_CACHE_PER_ROLE,
   );
-  
   return $blocks;
 }
 
 /**
  * Implements hook_block_configure().
  */
-function jsd_widget_block_configure($delta='') {
+function jsd_widget_block_configure($delta = '') {
   $form = array();
   
   switch($delta) {
     case 'jsd_widget' :
       // Text field form element
-      $form['text'] = array(
-        '#type' => 'text_format',
+      $form['widget_data_key'] = array(
+        '#type' => 'textfield',
         '#title' => t('Data Key'),
-        '#default_value' => variable_get('text_variable', ''),
+        '#size' => 60,
+        '#description' => t('The data-key value from the JSD Widget settings.'),
+        '#default_value' => variable_get('widget_data_key', t('')),
       );
 
       break;
@@ -39,7 +42,7 @@ function jsd_widget_block_save($delta = '', $edit = array()) {
   switch($delta) {
     case 'jsd_widget' :
       // Saving the text value.     
-      variable_set('text_variable', $edit['text']['value']);
+      variable_set('widget_data_key', $edit['widget_data_key']);
 
       break;
   }
@@ -48,12 +51,12 @@ function jsd_widget_block_save($delta = '', $edit = array()) {
 /**
  * Implements hook_block_view().
  */
-function custom_block_block_view($delta='') {
+function jsd_widget_block_view($delta='') {
   $block = array();
   
   switch($delta) {
     case 'jsd_widget' :
-      $block['content'] = my_block_view();
+      $block['content'] = jsd_widget_view();
       break;
   }
   
@@ -70,14 +73,14 @@ function jsd_widget_view() {
   $block = array();
 
   // Capture WYSIWYG text from the variable
-  $text = variable_get('text_variable', '');
+  $data_key = variable_get('widget_data_key');
 
   // Block output in HTML with div wrapper
   $block = array(
-    ‘message’ => array(
-      ‘#type’ => ‘markup’,
-      ‘#markup’ => $text,
-      ‘#suffix’ => ‘‘,
+    'message' => array(
+      '#type' => 'markup',
+      '#markup' => t('<script data-jsd-embedded data-key="' . $data_key . '" data-base-url="https://jsd-widget.atlassian.com" src="https://jsd-widget.atlassian.com/assets/embed.js"></script>'),
+      '#suffix' => '',
     ),
   );
   return $block;
