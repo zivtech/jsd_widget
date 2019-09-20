@@ -1,0 +1,9 @@
+access jsd widget configuration:
+  description: 'Access the block configuration for the JSD Widget block'
+  title: 'Access the JSD widget configuration page'
+  restrict access: FALSE
+
+access jsd widget:
+  title: 'Access the JSD Widget block.'
+  description: 'Access the JSD Widget block to submit requests.'
+  restrict access: FALSE

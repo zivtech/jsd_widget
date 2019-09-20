@@ -2,9 +2,11 @@
 
 namespace Drupal\jsd_widget\Plugin\Block;
 
+use Drupal\Core\Access\AccessResult;
 use Drupal\Core\Block\BlockBase;
 use Drupal\Core\Block\BlockPluginInterface;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Session\AccountInterface;
 
 /**
  * Provides a Jira Service Desk Widget Block.
@@ -18,6 +20,14 @@ use Drupal\Core\Form\FormStateInterface;
 class WidgetBlock extends BlockBase implements BlockPluginInterface {
 
   /**
+   * Set block access permissions.
+   */
+  protected function blockAccess(AccountInterface $account) {
+    return AccessResult::allowedIfHasPermission($account, 'access jsd widget');
+    return AccessResult::allowedIfHasPermission($account, 'access jsd widget configuration');
+  }
+
+  /**
    * Add field for Jira Service Desk data-key value.
    */
   public function blockForm($form, FormStateInterface $form_state) {
@@ -25,12 +35,14 @@ class WidgetBlock extends BlockBase implements BlockPluginInterface {
 
     $config = $this->getConfiguration();
 
-    $form['widget_data_key'] = [
-      '#type' => 'textfield',
-      '#title' => $this->t('Data Key'),
-      '#description' => $this->t('The data-key value from the JSD Widget settings.'),
-      '#default_value' => isset($config['widget_data_key']) ? $config['widget_data_key'] : '',
-    ];
+    if (\Drupal::currentUser()->hasPermission('access jsd widget configuration')) {
+      $form['widget_data_key'] = [
+        '#type' => 'textfield',
+        '#title' => $this->t('Data Key'),
+        '#description' => $this->t('The data-key value from the JSD Widget settings.'),
+        '#default_value' => isset($config['widget_data_key']) ? $config['widget_data_key'] : '',
+      ];
+    }
 
     return $form;
   }
@@ -51,9 +63,12 @@ class WidgetBlock extends BlockBase implements BlockPluginInterface {
     $config = $this->getConfiguration();
     $data_key = $config['widget_data_key'];
 
-    return [
-      '#markup' => $this->t('<script data-jsd-embedded data-key="' . $data_key . '" data-base-url="https://jsd-widget.atlassian.com" src="https://jsd-widget.atlassian.com/assets/embed.js"></script>'),
-    ];
+    if (\Drupal::currentUser()->hasPermission('access jsd widget')) {
+      return [
+        '#markup' => $this->t('<script data-jsd-embedded data-key="' . $data_key . '" data-base-url="https://jsd-widget.atlassian.com" src="https://jsd-widget.atlassian.com/assets/embed.js"></script>'),
+      ];
+    }
+
   }
 
 }
