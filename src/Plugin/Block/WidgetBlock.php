@@ -68,7 +68,7 @@ class WidgetBlock extends BlockBase implements BlockPluginInterface {
       'jsd_widget' => [
         '#type' => 'html_tag',
         '#tag' => 'script',
-        '#value' => 'test',
+        '#value' => '',
         '#attributes' => [
           'data-jsd-embedded data-key' => Html::escape($data_key),
           'data-base-url' => 'https://jsd-widget.atlassian.com',
