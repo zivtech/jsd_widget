@@ -6,6 +6,18 @@
  */
 
 /**
+ * Implements hook_permission().
+ */
+function jsd_widget_permission() {
+  return array(
+    'view jsd widget' => array(
+      'title' => t('View JSD Widget'),
+      'description' => t('Allow access to view the Jira Service Desk widget.'),
+    ),
+  );
+}
+
+/**
  * Implements hook_block_info().
  */
 function jsd_widget_block_info() {
@@ -51,12 +63,14 @@ function jsd_widget_block_save($delta = '', $edit = array()) {
 /**
  * Implements hook_block_view().
  */
-function jsd_widget_block_view($delta='') {
+function jsd_widget_block_view($delta = '') {
   $block = array();
 
   switch($delta) {
     case 'jsd_widget' :
-      $block['content'] = jsd_widget_get_block_view();
+      if (user_access('view jsd widget')) {
+        $block['content'] = jsd_widget_get_block_view();
+      }
       break;
   }
 
