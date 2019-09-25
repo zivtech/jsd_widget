@@ -65,7 +65,16 @@ class WidgetBlock extends BlockBase implements BlockPluginInterface {
     $data_key = $config['widget_data_key'];
 
     return [
-      '#markup' => '<script data-jsd-embedded data-key="' . Html::escape($data_key) . '" data-base-url="https://jsd-widget.atlassian.com" src="https://jsd-widget.atlassian.com/assets/embed.js"></script>',
+      'jsd_widget' => [
+        '#type' => 'html_tag',
+        '#tag' => 'script',
+        '#value' => 'test',
+        '#attributes' => [
+          'data-jsd-embedded data-key' => Html::escape($data_key),
+          'data-base-url' => 'https://jsd-widget.atlassian.com',
+          'src' => 'https://jsd-widget.atlassian.com/assets/embed.js',
+        ],
+      ],
     ];
 
   }
