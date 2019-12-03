@@ -1,13 +1,28 @@
 <?php
 
 /**
+ * @file
+ * Module file for jira service desk integration.
+ */
+
+/**
+ * Implements hook_permission().
+ */
+function jsd_widget_permission() {
+  return array(
+    'view jsd widget' => array(
+      'title' => t('View JSD Widget'),
+      'description' => t('Allow access to view the Jira Service Desk widget.'),
+    ),
+  );
+}
+
+/**
  * Implements hook_block_info().
  */
 function jsd_widget_block_info() {
   $blocks['jsd_widget'] = array(
-    // The name that will appear in the block list.
     'info' => t('Jira Service Desk Widget'),
-    // Default setting.
     'cache' => DRUPAL_CACHE_PER_ROLE,
   );
   return $blocks;
@@ -18,16 +33,15 @@ function jsd_widget_block_info() {
  */
 function jsd_widget_block_configure($delta = '') {
   $form = array();
-  
+
   switch($delta) {
     case 'jsd_widget' :
-      // Text field form element
-      $form['widget_data_key'] = array(
+      $form['jsd_widget_data_key'] = array(
         '#type' => 'textfield',
         '#title' => t('Data Key'),
         '#size' => 60,
         '#description' => t('The data-key value from the JSD Widget settings.'),
-        '#default_value' => variable_get('widget_data_key', t('')),
+        '#default_value' => variable_get('jsd_widget_data_key', NULL),
       );
 
       break;
@@ -41,9 +55,7 @@ function jsd_widget_block_configure($delta = '') {
 function jsd_widget_block_save($delta = '', $edit = array()) {
   switch($delta) {
     case 'jsd_widget' :
-      // Saving the text value.     
-      variable_set('widget_data_key', $edit['widget_data_key']);
-
+      variable_set('jsd_widget_data_key', $edit['jsd_widget_data_key']);
       break;
   }
 }
@@ -51,36 +63,34 @@ function jsd_widget_block_save($delta = '', $edit = array()) {
 /**
  * Implements hook_block_view().
  */
-function jsd_widget_block_view($delta='') {
+function jsd_widget_block_view($delta = '') {
   $block = array();
-  
+
   switch($delta) {
     case 'jsd_widget' :
-      $block['content'] = jsd_widget_view();
+      if (user_access('view jsd widget')) {
+        $block['content'] = jsd_widget_get_block_view();
+      }
       break;
   }
-  
+
   return $block;
 }
 
 /**
- * Custom function to assemble renderable array for block content.
- * Returns a renderable array with the block content.
- * @return
- *   returns a renderable array of block content.
+ *  Build the jira service desk block.
+ *
+ * @return array
+ *   returns a renderable service desk widget block.
  */
-function jsd_widget_view() {
-  $block = array();
+function jsd_widget_get_block_view() {
 
-  // Capture WYSIWYG text from the variable
-  $data_key = variable_get('widget_data_key');
+  $data_key = variable_get('jsd_widget_data_key', NULL);
 
-  // Block output in HTML with div wrapper
   $block = array(
     'message' => array(
       '#type' => 'markup',
-      '#markup' => t('<script data-jsd-embedded data-key="' . $data_key . '" data-base-url="https://jsd-widget.atlassian.com" src="https://jsd-widget.atlassian.com/assets/embed.js"></script>'),
-      '#suffix' => '',
+      '#markup' => '<script data-jsd-embedded data-key="' . check_plain($data_key) . '" data-base-url="https://jsd-widget.atlassian.com" src="https://jsd-widget.atlassian.com/assets/embed.js"></script>',
     ),
   );
   return $block;
