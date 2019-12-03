@@ -2,6 +2,7 @@
 
 namespace Drupal\jsd_widget\Plugin\Block;
 
+use Drupal\Component\Utility\Html;
 use Drupal\Core\Access\AccessResult;
 use Drupal\Core\Block\BlockBase;
 use Drupal\Core\Block\BlockPluginInterface;
@@ -24,7 +25,6 @@ class WidgetBlock extends BlockBase implements BlockPluginInterface {
    */
   protected function blockAccess(AccountInterface $account) {
     return AccessResult::allowedIfHasPermission($account, 'access jsd widget');
-    return AccessResult::allowedIfHasPermission($account, 'access jsd widget configuration');
   }
 
   /**
@@ -35,14 +35,13 @@ class WidgetBlock extends BlockBase implements BlockPluginInterface {
 
     $config = $this->getConfiguration();
 
-    if (\Drupal::currentUser()->hasPermission('access jsd widget configuration')) {
-      $form['widget_data_key'] = [
-        '#type' => 'textfield',
-        '#title' => $this->t('Data Key'),
-        '#description' => $this->t('The data-key value from the JSD Widget settings.'),
-        '#default_value' => isset($config['widget_data_key']) ? $config['widget_data_key'] : '',
-      ];
-    }
+    $form['widget_data_key'] = [
+      '#type' => 'textfield',
+      '#title' => $this->t('Data Key'),
+      '#description' => $this->t('The data-key value from the JSD Widget settings.'),
+      '#default_value' => isset($config['widget_data_key']) ? $config['widget_data_key'] : '',
+      '#access' => \Drupal::currentUser()->hasPermission('access jsd widget configuration'),
+    ];
 
     return $form;
   }
@@ -53,7 +52,9 @@ class WidgetBlock extends BlockBase implements BlockPluginInterface {
   public function blockSubmit($form, FormStateInterface $form_state) {
     parent::blockSubmit($form, $form_state);
     $values = $form_state->getValues();
-    $this->configuration['widget_data_key'] = $values['widget_data_key'];
+    if (isset($values['widget_data_key'])) {
+      $this->configuration['widget_data_key'] = $values['widget_data_key'];
+    }
   }
 
   /**
@@ -63,12 +64,20 @@ class WidgetBlock extends BlockBase implements BlockPluginInterface {
     $config = $this->getConfiguration();
     $data_key = $config['widget_data_key'];
 
-    if (\Drupal::currentUser()->hasPermission('access jsd widget')) {
-      return [
-        '#markup' => $this->t('<script data-jsd-embedded data-key="' . $data_key . '" data-base-url="https://jsd-widget.atlassian.com" src="https://jsd-widget.atlassian.com/assets/embed.js"></script>'),
-      ];
-    }
+    return [
+      'jsd_widget' => [
+        '#type' => 'html_tag',
+        '#tag' => 'script',
+        '#value' => '',
+        '#attributes' => [
+          'data-jsd-embedded data-key' => Html::escape($data_key),
+          'data-base-url' => 'https://jsd-widget.atlassian.com',
+          'src' => 'https://jsd-widget.atlassian.com/assets/embed.js',
+        ],
+      ],
+    ];
 
   }
 
 }
+
